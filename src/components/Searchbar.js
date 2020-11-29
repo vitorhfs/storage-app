@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useDataLayerValue } from '../context/DataLayer';
 
 const SearchBar = () => {
-    const [ { searchResult }, dispatch] = useDataLayerValue();
+    const [ , dispatch] = useDataLayerValue();
     const [ searchInput, setSearchInput ] = useState('');
 
     useEffect(() => {
@@ -10,7 +10,6 @@ const SearchBar = () => {
             type: 'SET_SEARCH',
             payload: searchInput
         })
-        console.log(searchResult);
     }, [searchInput]);
 
     return (

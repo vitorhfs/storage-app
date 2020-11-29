@@ -3,6 +3,7 @@ import { useDataLayerValue } from '../context/DataLayer';
 
 const ProductList = () => {
     const [ { products, searchResult }, dispatch ] = useDataLayerValue();
+    const [ draggedItem, setDraggeditem ] = useState('');
 
     function reorderProductsArray(products){
         dispatch({
@@ -11,14 +12,38 @@ const ProductList = () => {
         })
     }
 
-    console.log(searchResult);
+    function onDragStart(event, index){
+        setDraggeditem(products[index]);
+
+        event.dataTransfer.effectAllowed = "move";
+        event.dataTransfer.setData('text/html', event.target);
+        event.dataTransfer.setDragImage(event.target, 20, 20);
+    }
+
+    function onDragOver(index){
+        const draggedOverItem = products[index];
+
+        if(draggedItem === draggedOverItem){
+            return;
+        }
+
+        let items = products.filter(item => item !== draggedItem);
+
+        items.splice(index, 0, draggedItem);
+
+        localStorage.setItem('products', JSON.stringify(items));
+        dispatch({
+            type: 'SET_PRODUCT',
+            payload: items
+        });
+    }
 
     return (
         <div className="product">
-            <h1>CONFIRA SEU ESTOQUE</h1>
+            {products[0] && <h1>CONFIRA SEU ESTOQUE</h1>}
             <table>
                 <thead>
-                    <tr className="product__header">
+                    {products[0] && <tr className="product__header">
                         <th 
                             className="product__header-id" 
                             onClick={() => {
@@ -59,7 +84,7 @@ const ProductList = () => {
 
                                 reorderProductsArray(sorted)}}
                         >Valor Total</th>
-                    </tr>
+                    </tr>}
                 </thead>
                 <tbody>
                 { products && products.filter((product, index) => {
@@ -72,7 +97,12 @@ const ProductList = () => {
                         return product;
 
                 }).map((product, index) => (
-                    <tr className="product__container" draggable>
+                    <tr 
+                        className="product__container" 
+                        onDragStart={(event) => onDragStart(event, index)}
+                        onDragOver={() => onDragOver(index)}
+                        draggable
+                    >
                         <td className="product__id">
                             <h2>{product.id}</h2>
                         </td>

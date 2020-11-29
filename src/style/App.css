@@ -65,7 +65,7 @@
   margin-bottom: 2em;
 }
 
-.form > button:hover {
+.form > button:hover, .form > button:focus {
   border-radius: 35px;
 }
 

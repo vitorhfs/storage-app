@@ -1,12 +1,19 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import './index.css';
+import './style/index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
+import { DataLayer } from './context/DataLayer';
+import reducer, { initialState } from './context/reducer';
+
+if(localStorage.getItem('products') === null)
+    localStorage.setItem('products', JSON.stringify([]));
 
 ReactDOM.render(
   <React.StrictMode>
-    <App />
+    <DataLayer initialState={initialState} reducer={reducer}>
+      <App />
+    </DataLayer>
   </React.StrictMode>,
   document.getElementById('root')
 );

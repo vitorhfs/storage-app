@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useDataLayerValue } from '../context/DataLayer';
 
 const ProductList = () => {
@@ -10,6 +10,13 @@ const ProductList = () => {
             type: 'SET_PRODUCT',
             payload: products
         })
+    }
+
+    function changeValueFormat(number){
+        number = number.toFixed(2).split('.');
+        number[0] = number[0].split(/(?=(?:...)*$)/).join('.');
+        
+        return number.join(',');
     }
 
     function onDragStart(event, index){
@@ -56,7 +63,7 @@ const ProductList = () => {
                             className="product__header-name" 
                             onClick={() => {
                                 const sorted = products.sort((a,b) => 
-                                (a.name < b.name) ? 1 : ((b.name < a.name) ? -1 : 0));
+                                (a.name.toLowerCase() > b.name.toLowerCase()) ? 1 : ((b.name.toLowerCase() > a.name.toLowerCase()) ? -1 : 0));
 
                                 reorderProductsArray(sorted)}}
                         >Name</th>
@@ -87,7 +94,7 @@ const ProductList = () => {
                     </tr>}
                 </thead>
                 <tbody>
-                { products && products.filter((product, index) => {
+                { products && products.filter((product) => {
                     const regex = new RegExp(`${searchResult}`, 'gi');
 
                     if(searchResult === '')
@@ -149,10 +156,10 @@ const ProductList = () => {
                             }}>+</button>
                         </td>
                         <td className="product__unprice">
-                          <h4>{product.unitaryPrice.toFixed(2)}</h4>
+                          <h4>{changeValueFormat(product.unitaryPrice)}</h4>
                         </td>
                         <td className="product__fullprice">
-                            <h4>{product.fullPrice.toFixed(2)}</h4>
+                            <h4>{changeValueFormat(product.fullPrice)}</h4>
                             <button 
                                 className="product__delete"
                                 onClick={() => {                                    

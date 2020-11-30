@@ -42,7 +42,7 @@ const Form = () => {
 
   function handleSubmit(event){
     event.preventDefault();
-
+    
     const id = getID();   
 
     if(name === '' || !stockQuantity || !unitaryPrice){
@@ -70,6 +70,7 @@ const Form = () => {
       payload: newProduct,
     });
 
+    event.target[0].focus();
     setStockQuantity('');
     setUnitaryPrice('');
     setName('');
@@ -80,37 +81,24 @@ const Form = () => {
   }
 
   function handleUnitaryPrice(event){
-    if(event.target.value.match(/\d+[,,.]*\d*/g === false)){
-      setUnitaryPrice('');
-      alert('Insira um número válido');
-      return;
-    }
+    if(event.target.value.match(/\d+[,,.]*?\d*?/g)){
+      if(event.target.value.match(/\d+,?\d+/g)){
+        return setUnitaryPrice(event.target.value.replace(',', '.'));
+      }
 
-    if(event.target.value.match(/\d+,?\d+/g)){
-      return setUnitaryPrice(event.target.value.replace(',', '.'));
+      return setUnitaryPrice(event.target.value);
     }
-
-    if(Number(event.target.value) || event.target.value === ''){
-      return setUnitaryPrice(Number(event.target.value));
-    }
-
     setUnitaryPrice('');
     alert('Por favor, indique a quantidade com números');
   }
 
   function handleStockQuantity(event){
-    if(event.target.value.match(/\d+[,,.]*\d*/g) === false){
-      setStockQuantity('');
-      alert('Insira um número válido');
-      return;
-    }
+    if(event.target.value.match(/\d+[,,.]*\d*/g)){
+      if(event.target.value.match(/\d+,?\d+/g)){
+        return setStockQuantity(event.target.value.replace(',', '.'));
+      }
 
-    if(event.target.value.match(/\d+,?\d+/g)){
-      return setStockQuantity(event.target.value.replace(',', '.'));
-    }
-
-    if(Number(event.target.value) || event.target.value === ''){
-      return setStockQuantity(Number(event.target.value));
+      return setStockQuantity(event.target.value);
     }
 
     setStockQuantity('');
